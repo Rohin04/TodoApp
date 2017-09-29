@@ -30,7 +30,8 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    val dummyData = arrayListOf("Hi","Hello","Good morning")
+    val dummyData = arrayListOf<Task>(Task(0,"Get Motivated for learning Kotlin",false),
+            Task(0,"Learn Kotlin Syntax",true))
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
