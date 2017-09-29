@@ -1,17 +1,22 @@
 package com.soms.todoapp
 
 import android.os.Bundle
-import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.Menu
 import android.view.MenuItem
 
 import kotlinx.android.synthetic.main.activity_main.*
+import android.widget.Toast
+import android.support.v7.app.AlertDialog
+import android.widget.LinearLayout
+import android.widget.EditText
+
 
 class MainActivity : AppCompatActivity() {
+
+    var todoAdapter : TodoAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -21,17 +26,15 @@ class MainActivity : AppCompatActivity() {
 
         val recyclerView = findViewById<RecyclerView>(R.id.todoRecylerView)
         recyclerView.layoutManager = LinearLayoutManager(this)
-        recyclerView.adapter = TodoAdapter(dummyData)
+        todoAdapter = TodoAdapter(dummyData)
+        recyclerView.adapter = todoAdapter
 
 
-        fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show()
-        }
+        fab.setOnClickListener { showDialog() }
     }
 
-    val dummyData = arrayListOf<Task>(Task(0,"Get Motivated for learning Kotlin",false),
-            Task(0,"Learn Kotlin Syntax",true))
+    val dummyData = arrayListOf<Task>(Task(0, "Get Motivated for learning Kotlin", false),
+            Task(0, "Learn Kotlin Syntax", true))
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -47,5 +50,31 @@ class MainActivity : AppCompatActivity() {
             R.id.action_settings -> true
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    private fun showDialog() {
+        val alertDialog = AlertDialog.Builder(this@MainActivity)
+        alertDialog.setTitle("Task")
+        alertDialog.setMessage("Create a task")
+
+        val input = EditText(this@MainActivity)
+        val lp = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT)
+        input.layoutParams = lp
+        alertDialog.setView(input)
+
+        alertDialog.setPositiveButton("Create",
+                { _, _ ->
+                    val taskName = input.text.toString()
+                    val task = Task(1, taskName, false)
+                    dummyData.add(task)
+                    todoAdapter?.notifyDataSetChanged()
+                    Toast.makeText(this@MainActivity, "$taskName created", Toast.LENGTH_SHORT).show()
+                })
+
+        alertDialog.setNegativeButton("Cancel",
+                { dialog, _ -> dialog.cancel() })
+        alertDialog.show()
     }
 }
