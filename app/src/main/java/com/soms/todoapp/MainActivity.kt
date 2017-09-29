@@ -1,5 +1,7 @@
 package com.soms.todoapp
 
+import android.arch.lifecycle.Observer
+import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
@@ -16,7 +18,8 @@ import android.widget.EditText
 
 class MainActivity : AppCompatActivity() {
 
-    private var todoAdapter : TodoAdapter? = null
+    private var todoAdapter: TodoAdapter? = null
+    private var appDatabase: AppDatabase? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,15 +29,21 @@ class MainActivity : AppCompatActivity() {
 
         val recyclerView = findViewById<RecyclerView>(R.id.todoRecylerView)
         recyclerView.layoutManager = LinearLayoutManager(this)
-        todoAdapter = TodoAdapter(dummyData)
+        todoAdapter = TodoAdapter(ArrayList())
+        appDatabase = AppDatabase.getDatabase(this.application)
+        appDatabase?.taskDao()?.loadAllTasks()?.observe(this, Observer<List<Task>> { tasks ->
+            val newTasks = ArrayList<Task>()
+            if (tasks != null) {
+                newTasks.addAll(tasks)
+            }
+            todoAdapter?.setTasks(newTasks)
+        })
+
         recyclerView.adapter = todoAdapter
 
 
         fab.setOnClickListener { showDialog() }
     }
-
-    private val dummyData = arrayListOf(Task(0, "Get Motivated for learning Kotlin", false),
-            Task(0, "Learn Kotlin Syntax", true))
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -67,9 +76,8 @@ class MainActivity : AppCompatActivity() {
         alertDialog.setPositiveButton("Create",
                 { _, _ ->
                     val taskName = input.text.toString()
-                    val task = Task(1, taskName, false)
-                    dummyData.add(task)
-                    todoAdapter?.notifyDataSetChanged()
+                    val task = Task(taskName = taskName)
+                    appDatabase?.taskDao()?.insertTask(task)
                     Toast.makeText(this@MainActivity, "$taskName created", Toast.LENGTH_SHORT).show()
                 })
 

@@ -16,6 +16,13 @@ import android.graphics.Paint.STRIKE_THRU_TEXT_FLAG
  */
 
 class TodoAdapter(private val data: ArrayList<Task>) : RecyclerView.Adapter<TodoAdapter.TodoViewHolder>() {
+
+    fun setTasks(taskList: ArrayList<Task>) {
+        data.clear()
+        data.addAll(taskList)
+        notifyDataSetChanged()
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): TodoViewHolder {
         return TodoViewHolder(LayoutInflater.from(parent?.context)
                 .inflate(R.layout.single_item, parent, false))

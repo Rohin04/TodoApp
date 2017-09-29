@@ -11,6 +11,8 @@ import android.content.Context
 @Database(entities = arrayOf(Task::class), version = 1)
 abstract class AppDatabase : RoomDatabase() {
 
+    abstract fun taskDao(): TaskDao
+
     companion object {
 
         private lateinit var INSTANCE: AppDatabase
