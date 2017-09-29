@@ -1,6 +1,7 @@
 package com.soms.todoapp
 
 import android.arch.lifecycle.LiveData
+import android.arch.lifecycle.MutableLiveData
 import android.arch.persistence.room.*
 
 /**
@@ -9,11 +10,11 @@ import android.arch.persistence.room.*
 @Dao
 interface TaskDao {
     @Query("select * from tasks")
-    fun loadAllTasks(): LiveData<List<Task>>
-
-    @Delete
-    abstract fun deleteTask(taskEntity: Task)
+    fun loadAllTasks(): MutableLiveData<List<Task>>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    abstract fun insertTask(taskEntity: Task)
+    fun insertTask(taskEntity: Task)
+
+    @Update
+    fun updateTask(task: Task)
 }

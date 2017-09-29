@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.TextView
 import android.graphics.Paint.STRIKE_THRU_TEXT_FLAG
-
+import android.widget.CompoundButton
 
 
 /**
@@ -33,6 +33,12 @@ class TodoAdapter(private val data: ArrayList<Task>) : RecyclerView.Adapter<Todo
         holder?.done?.isChecked = data[position].isCompleted
         if(data[position].isCompleted){
             holder?.todoText?.paintFlags = holder?.todoText?.paintFlags?.or(Paint.STRIKE_THRU_TEXT_FLAG)!!
+        }
+        holder?.done?.setOnCheckedChangeListener { buttonView, isChecked ->
+                val appDatabase = AppDatabase.getDatabase(buttonView.context)
+                var task = data[position]
+                task.isCompleted = isChecked
+                appDatabase.taskDao().updateTask(task)
         }
     }
 
