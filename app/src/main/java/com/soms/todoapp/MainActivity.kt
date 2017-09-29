@@ -16,7 +16,7 @@ import android.widget.EditText
 
 class MainActivity : AppCompatActivity() {
 
-    var todoAdapter : TodoAdapter? = null
+    private var todoAdapter : TodoAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,7 +33,7 @@ class MainActivity : AppCompatActivity() {
         fab.setOnClickListener { showDialog() }
     }
 
-    val dummyData = arrayListOf<Task>(Task(0, "Get Motivated for learning Kotlin", false),
+    private val dummyData = arrayListOf(Task(0, "Get Motivated for learning Kotlin", false),
             Task(0, "Learn Kotlin Syntax", true))
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
